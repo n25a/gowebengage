@@ -174,3 +174,35 @@ func (w *webengage) CreateTransactionalCampaignMessages(ctx context.Context, api
 
 	return &rsp, nil
 }
+
+//////////////////////////////////////////////////////////////////////////////
+//									get survey								//
+//////////////////////////////////////////////////////////////////////////////
+
+// GetSurvey get a survey from webengage.
+func (w *webengage) GetSurvey(ctx context.Context, apiKey, surveyResponseID string) (*SurveyResponse, error) {
+	url := fmt.Sprintf("/v1/survey/response/%s", surveyResponseID)
+	response, err := w.client.R().SetContext(ctx).
+		SetHeader("Content-Type", "application/json").
+		SetAuthToken(apiKey).
+		Get(url)
+	if err != nil {
+		return nil, fmt.Errorf("unable to send request: %w", err)
+	}
+
+	if response.StatusCode() != 200 && response.StatusCode() != 201 {
+		var rsp WebengageResponseError
+		if err := json.Unmarshal(response.Body(), &rsp); err != nil {
+			return nil, fmt.Errorf("unable to unmarshal response: %w", err)
+		}
+		return nil, fmt.Errorf("unexpected status code: %d, message: %s",
+			response.StatusCode(), rsp.Response.Message)
+	}
+
+	var rsp SurveyResponse
+	if err := json.Unmarshal(response.Body(), &rsp); err != nil {
+		return nil, fmt.Errorf("request succeded send but unable to unmarshal response: %w", err)
+	}
+
+	return &rsp, nil
+}

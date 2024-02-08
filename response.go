@@ -21,3 +21,15 @@ type TransactionalCampaignMessagesResponse struct {
 		} `json:"data"`
 	} `json:"response"`
 }
+
+//////////////////////////////////////////////////////////////////////////////
+//								Survey										//
+//////////////////////////////////////////////////////////////////////////////
+
+type SurveyResponse struct {
+	Response struct {
+		Data    map[string]interface{} `json:"data"`
+		Message string                 `json:"message"`
+		Status  string                 `json:"status"`
+	} `json:"response"`
+}

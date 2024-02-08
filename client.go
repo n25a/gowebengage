@@ -13,6 +13,7 @@ type Webengage interface {
 		eventData map[string]interface{}) error
 	CreateTransactionalCampaignMessages(ctx context.Context, apiKey, licenseCode, userID string, ttl int,
 		token map[string]interface{}) (*TransactionalCampaignMessagesResponse, error)
+	GetSurvey(ctx context.Context, apiKey, surveyResponseID string) (*SurveyResponse, error)
 }
 
 type webengage struct {
