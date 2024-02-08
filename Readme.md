@@ -1,5 +1,5 @@
 <div align="center">
-    <img src="webengage.png" align="center" width="500" height="500"/>
+    <img src="webengage.png" align="center" width="600" height="315"/>
     <div align="center"> 
         <h1> 
             <b>
