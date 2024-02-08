@@ -1,8 +1,18 @@
 package gowebengage
 
-import "github.com/go-resty/resty/v2"
+import (
+	"context"
+
+	"github.com/go-resty/resty/v2"
+)
 
 type Webengage interface {
+	CreateUser(ctx context.Context, apiKey, licenseCode, userID string, request UserRequest) error
+	UpdateUser(ctx context.Context, apiKey, licenseCode, userID string, request UserRequest) error
+	CreateEvent(ctx context.Context, apiKey, licenseCode, userID string, eventName string, eventTime string,
+		eventData map[string]interface{}) error
+	CreateTransactionalCampaignMessages(ctx context.Context, apiKey, licenseCode, userID string, ttl int,
+		token map[string]interface{}) (*TransactionalCampaignMessagesResponse, error)
 }
 
 type webengage struct {
