@@ -5,6 +5,7 @@ package gowebengage
 //////////////////////////////////////////////////////////////////////////////
 
 type UserRequest struct {
+	UserID     string                 `json:"userId"`
 	FirstName  string                 `json:"firstName"`
 	LastName   string                 `json:"lastName"`
 	BirthDate  string                 `json:"birthDate"`
@@ -33,4 +34,15 @@ func (t *TransactionalCampaignMessagesRequest) SetData(ttl int, userID string, t
 	t.TTL = ttl
 	t.UserId = userID
 	t.OverrideData.Context.Token = token
+}
+
+//////////////////////////////////////////////////////////////////////////////
+//								Events										//
+//////////////////////////////////////////////////////////////////////////////
+
+type EventRequest struct {
+	UserID    string                 `json:"userId"`
+	EventName string                 `json:"eventName"`
+	EventTime string                 `json:"eventTime"`
+	EventData map[string]interface{} `json:"eventData"`
 }
