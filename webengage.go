@@ -210,8 +210,7 @@ func (w *webengage) CreateBulkEvent(ctx context.Context, apiKey string, licenseC
 
 // CreateTransactionalCampaignMessages creates a new transactional campaign in webengage.
 func (w *webengage) CreateTransactionalCampaignMessages(ctx context.Context, apiKey, licenseCode,
-	userID string, ttl int, token map[string]interface{}) (*TransactionalCampaignMessagesResponse, error) {
-
+	userID string, ttl int, token map[string]interface{}, experimentID string) (*TransactionalCampaignMessagesResponse, error) {
 	var request TransactionalCampaignMessagesRequest
 	request.SetData(ttl, userID, token)
 	body, err := json.Marshal(request)
@@ -219,7 +218,7 @@ func (w *webengage) CreateTransactionalCampaignMessages(ctx context.Context, api
 		return nil, fmt.Errorf("unable to marshal request: %w", err)
 	}
 
-	url := fmt.Sprintf("/v1/accounts/%s/events", licenseCode)
+	url := fmt.Sprintf("/v2/accounts/%s/experiments/%s/transaction", licenseCode, experimentID)
 	response, err := w.client.R().SetContext(ctx).
 		SetHeader("Content-Type", "application/json").
 		SetAuthToken(apiKey).

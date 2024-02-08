@@ -15,7 +15,7 @@ type Webengage interface {
 		eventData map[string]interface{}) error
 	CreateBulkEvent(ctx context.Context, apiKey string, licenseCode string, request []EventRequest) error
 	CreateTransactionalCampaignMessages(ctx context.Context, apiKey, licenseCode, userID string, ttl int,
-		token map[string]interface{}) (*TransactionalCampaignMessagesResponse, error)
+		token map[string]interface{}, experimentID string) (*TransactionalCampaignMessagesResponse, error)
 	GetSurvey(ctx context.Context, apiKey, surveyResponseID string) (*SurveyResponse, error)
 }
 
