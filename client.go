@@ -6,6 +6,7 @@ import (
 	"github.com/go-resty/resty/v2"
 )
 
+// Webengage is the interface for the webengage client.
 type Webengage interface {
 	CreateUser(ctx context.Context, apiKey, licenseCode, userID string, request UserRequest) error
 	UpdateUser(ctx context.Context, apiKey, licenseCode, userID string, request UserRequest) error
