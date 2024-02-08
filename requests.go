@@ -1,6 +1,10 @@
 package gowebengage
 
-type CreatUserRequest struct {
+//////////////////////////////////////////////////////////////////////////////
+//								  User										//
+//////////////////////////////////////////////////////////////////////////////
+
+type UserRequest struct {
 	FirstName  string                 `json:"firstName"`
 	LastName   string                 `json:"lastName"`
 	BirthDate  string                 `json:"birthDate"`
@@ -9,4 +13,24 @@ type CreatUserRequest struct {
 	Phone      string                 `json:"phone"`
 	Company    string                 `json:"company"`
 	Attributes map[string]interface{} `json:"attributes"`
+}
+
+//////////////////////////////////////////////////////////////////////////////
+//								Campaign									//
+//////////////////////////////////////////////////////////////////////////////
+
+type TransactionalCampaignMessagesRequest struct {
+	TTL          int    `json:"ttl"`
+	UserId       string `json:"userId"`
+	OverrideData struct {
+		Context struct {
+			Token map[string]interface{} `json:"token"`
+		} `json:"context"`
+	} `json:"overrideData"`
+}
+
+func (t *TransactionalCampaignMessagesRequest) SetData(ttl int, userID string, token map[string]interface{}) {
+	t.TTL = ttl
+	t.UserId = userID
+	t.OverrideData.Context.Token = token
 }
