@@ -20,15 +20,17 @@ type Webengage interface {
 }
 
 type webengage struct {
-	client *resty.Client
+	client    *resty.Client
+	userAgent string
 }
 
-func NewWebengage(address string) Webengage {
+func NewWebengage(address string, userAgent string) Webengage {
 	client := resty.New().
 		SetAuthScheme("Bearer").
 		SetBaseURL(address)
 
 	return &webengage{
-		client: client,
+		client:    client,
+		userAgent: userAgent,
 	}
 }

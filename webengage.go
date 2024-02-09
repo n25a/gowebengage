@@ -22,6 +22,7 @@ func (w *webengage) CreateUser(ctx context.Context, apiKey string, licenseCode s
 	url := fmt.Sprintf("/v1/accounts/%s/users", licenseCode)
 	response, err := w.client.R().SetContext(ctx).
 		SetHeader("Content-Type", "application/json").
+		SetHeader("User-Agent", w.userAgent).
 		SetAuthToken(apiKey).
 		SetBody(body).
 		Post(url)
@@ -61,6 +62,7 @@ func (w *webengage) CreateBulkUser(ctx context.Context, apiKey string, licenseCo
 	url := fmt.Sprintf("/v1/accounts/%s/bulk-users", licenseCode)
 	response, err := w.client.R().SetContext(ctx).
 		SetHeader("Content-Type", "application/json").
+		SetHeader("User-Agent", w.userAgent).
 		SetAuthToken(apiKey).
 		SetBody(body).
 		Post(url)
@@ -102,6 +104,7 @@ func (w *webengage) UpdateUser(ctx context.Context, apiKey string, licenseCode s
 	url := fmt.Sprintf("/v1/accounts/%s/users", licenseCode)
 	response, err := w.client.R().SetContext(ctx).
 		SetHeader("Content-Type", "application/json").
+		SetHeader("User-Agent", w.userAgent).
 		SetAuthToken(apiKey).
 		SetBody(body).
 		Put(url)
@@ -125,7 +128,7 @@ func (w *webengage) UpdateUser(ctx context.Context, apiKey string, licenseCode s
 //						create a new webengage event						//
 //////////////////////////////////////////////////////////////////////////////
 
-// CreateEvent creates a new event in webengage.
+// CreateEvent creates a new event in webengage and send it.
 func (w *webengage) CreateEvent(ctx context.Context, apiKey string, licenseCode string,
 	userID string, eventName string, eventTime string, eventData map[string]interface{}) error {
 
@@ -147,6 +150,51 @@ func (w *webengage) CreateEvent(ctx context.Context, apiKey string, licenseCode 
 	url := fmt.Sprintf("/v1/accounts/%s/events", licenseCode)
 	response, err := w.client.R().SetContext(ctx).
 		SetHeader("Content-Type", "application/json").
+		SetHeader("User-Agent", w.userAgent).
+		SetAuthToken(apiKey).
+		SetBody(body).
+		Post(url)
+	if err != nil {
+		return fmt.Errorf("unable to send request: %w", err)
+	}
+
+	if response.StatusCode() != 200 && response.StatusCode() != 201 {
+		var rsp WebengageResponseError
+		if err := json.Unmarshal(response.Body(), &rsp); err != nil {
+			return fmt.Errorf("unable to unmarshal response: %w", err)
+		}
+		return fmt.Errorf("unexpected status code: %d, message: %s",
+			response.StatusCode(), rsp.Response.Message)
+	}
+
+	return nil
+}
+
+//////////////////////////////////////////////////////////////////////////////
+//					create a new webengage business event					//
+//////////////////////////////////////////////////////////////////////////////
+
+// CreateBusinessEvent creates a new business event in webengage and send it.
+func (w *webengage) CreateBusinessEvent(ctx context.Context, apiKey string, licenseCode string,
+	incentiveSegmentName string, eventName string, eventData map[string]interface{}) error {
+
+	body, err := json.Marshal(struct {
+		IncentiveSegmentName string                 `json:"incentive_segment_name"`
+		EventName            string                 `json:"eventName"`
+		EventData            map[string]interface{} `json:"eventData"`
+	}{
+		IncentiveSegmentName: incentiveSegmentName,
+		EventName:            eventName,
+		EventData:            eventData,
+	})
+	if err != nil {
+		return fmt.Errorf("unable to marshal request: %w", err)
+	}
+
+	url := fmt.Sprintf("/v2/accounts/%s/business/save-event", licenseCode)
+	response, err := w.client.R().SetContext(ctx).
+		SetHeader("Content-Type", "application/json").
+		SetHeader("User-Agent", w.userAgent).
 		SetAuthToken(apiKey).
 		SetBody(body).
 		Post(url)
@@ -170,7 +218,7 @@ func (w *webengage) CreateEvent(ctx context.Context, apiKey string, licenseCode 
 //					create list of new webengage events						//
 //////////////////////////////////////////////////////////////////////////////
 
-// CreateBulkEvent creates list of new events in webengage.
+// CreateBulkEvent creates list of new events in webengage and them.
 func (w *webengage) CreateBulkEvent(ctx context.Context, apiKey string, licenseCode string,
 	request []EventRequest) error {
 	body, err := json.Marshal(struct {
@@ -185,6 +233,7 @@ func (w *webengage) CreateBulkEvent(ctx context.Context, apiKey string, licenseC
 	url := fmt.Sprintf("/v1/accounts/%s/bulk-events", licenseCode)
 	response, err := w.client.R().SetContext(ctx).
 		SetHeader("Content-Type", "application/json").
+		SetHeader("User-Agent", w.userAgent).
 		SetAuthToken(apiKey).
 		SetBody(body).
 		Post(url)
@@ -221,6 +270,7 @@ func (w *webengage) CreateTransactionalCampaignMessages(ctx context.Context, api
 	url := fmt.Sprintf("/v2/accounts/%s/experiments/%s/transaction", licenseCode, experimentID)
 	response, err := w.client.R().SetContext(ctx).
 		SetHeader("Content-Type", "application/json").
+		SetHeader("User-Agent", w.userAgent).
 		SetAuthToken(apiKey).
 		SetBody(body).
 		Post(url)
@@ -254,6 +304,7 @@ func (w *webengage) GetSurvey(ctx context.Context, apiKey, surveyResponseID stri
 	url := fmt.Sprintf("/v1/survey/response/%s", surveyResponseID)
 	response, err := w.client.R().SetContext(ctx).
 		SetHeader("Content-Type", "application/json").
+		SetHeader("User-Agent", w.userAgent).
 		SetAuthToken(apiKey).
 		Get(url)
 	if err != nil {
