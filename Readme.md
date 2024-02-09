@@ -36,7 +36,7 @@ import (
 
 func main() {
     // Initialize the client
-    client := gowebengage.NewClient("YOUR_WEBENGAGE_ADDRESS")
+    client := gowebengage.NewClient("YOUR_WEBENGAGE_ADDRESS", "USER_AGENT")
 }
 ```
 
