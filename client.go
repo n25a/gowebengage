@@ -30,7 +30,7 @@ func NewWebengage(address string, proxy string, userAgent string) Webengage {
 		SetBaseURL(address)
 
 	if proxy != "" {
-		client.SetProxy(proxy)
+		client = client.SetProxy(proxy)
 	}
 
 	return &webengage{
