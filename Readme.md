@@ -36,8 +36,11 @@ import (
 
 func main() {
     // Initialize the client
-    client := gowebengage.NewClient("YOUR_WEBENGAGE_ADDRESS", "USER_AGENT")
+    client := gowebengage.NewClient("YOUR_WEBENGAGE_ADDRESS", "PROXY_ADDRESS", "USER_AGENT")
 }
 ```
+If you don't have a proxy, you can initialize the client without the proxy address and give empty string as the second parameter.
+
+```go
 
 for more information about all functions and how to use them, please check `Webengage` interface in `client.go` file.  

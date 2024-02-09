@@ -24,10 +24,14 @@ type webengage struct {
 	userAgent string
 }
 
-func NewWebengage(address string, userAgent string) Webengage {
+func NewWebengage(address string, proxy string, userAgent string) Webengage {
 	client := resty.New().
 		SetAuthScheme("Bearer").
 		SetBaseURL(address)
+
+	if proxy != "" {
+		client.SetProxy(proxy)
+	}
 
 	return &webengage{
 		client:    client,
